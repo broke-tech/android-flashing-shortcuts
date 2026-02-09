@@ -1,4 +1,5 @@
 # AFS - Android Flashing Shortcuts
+<img width="2560" height="1600" alt="Screenshot (1)" src="https://github.com/user-attachments/assets/b53b78dd-e864-4ca3-8736-424661eb1b4e" />
 
 A PyQt5-based GUI application for simplifying Android device flashing and debugging operations through ADB and Fastboot commands.
 
