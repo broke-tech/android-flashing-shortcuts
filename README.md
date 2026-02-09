@@ -70,7 +70,7 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## License
 
-[Specify your license here]
+please no copy :(
 
 ## Disclaimer
 
