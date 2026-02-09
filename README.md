@@ -40,12 +40,8 @@ AFS (Android Flashing Shortcuts) provides a user-friendly graphical interface fo
 - File browser for selecting images and packages
 
 ## Requirements
+-Fastboot drivers
 
-- Python 3.x
-- PyQt5
-- QDarkStyle
-- ADB and Fastboot tools (included in `platform-tools` folder)
-- 
 ## Safety Features
 
 - Confirmation dialogs for critical operations
