@@ -6,7 +6,7 @@ import runtime
 import os
 import json
 import requests
-from webbrowser import open as opensite
+from webbrowser import open_new_tab as opensite
 import subprocess
 import sys
 
@@ -36,7 +36,7 @@ class AboutTile(QGroupBox):
             self.visitbut = QPushButton("Visit")
             self.visitbut.clicked.connect(lambda: opensite(self.desc.text()))
             self.descl.addWidget(self.visitbut)
-        self.setStyleSheet("QGroupBox{"+f"{self.placementrules[self.placement]};"+"background-color: "+uitools.colors["toolgb"][self.parentv.mode]+";} QPushButton { background-color: #5A5A5A; border-radius: 7px; padding: 5px} QPushButton::hover { background-color: #636363; border-radius: 7px; padding: 5px} QLineEdit { background-color: #5A5A5A; border-radius: 7px; padding: 5px}")
+        self.setStyleSheet("QGroupBox{"+f"{self.placementrules[self.placement]};"+"background-color: "+uitools.colors["toolgb"][self.parentv.mode]+";} QPushButton { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 7px; padding: 5px} QPushButton::hover { background-color: #636363; border-radius: 7px; padding: 5px} QLineEdit { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 7px; padding: 5px}")
 
 
 class TitleBox(QGroupBox):

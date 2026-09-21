@@ -1,13 +1,14 @@
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import QSizePolicy,QListWidgetItem, QDialog, QGroupBox, QSpacerItem, QProgressBar,QRadioButton, QFrame, QScrollArea, QFileDialog, QComboBox, QCheckBox, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox, QPushButton, QLineEdit, QTextEdit, QListWidget
 from PyQt5.QtGui import QPixmap, QIcon, QFont, QColor, QFontDatabase, QPalette, QMouseEvent
+from webbrowser import open_new_tab as opensite
 import uitools
 import runtime
 import adbtools
 import fastboottools
 import sidewidget
 import abouttiles
-import guidetile
+import start
 import appruntime
 import apptile
 import appearancesetting
@@ -15,16 +16,16 @@ import safetysetting
 import os
 import json
 import requests
-from webbrowser import open as opensite
-import subprocess
 import sys
 
 curdir = os.getcwd()
-version = "3.0 alpha"
+version = "3.0"
 
 class App(QWidget):
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon(os.path.join(curdir,"assets","icons","icon.ico")))
+        self.setWindowTitle("AFS - Android Flashing Shortcuts")
         with open(os.path.join(curdir,"assets","config.json"),"r") as f:
             self.config = json.load(f)
         self.mode = self.config["mode"]
@@ -44,11 +45,12 @@ class App(QWidget):
         self.dialogbox = Dialog(self)
         self.msg = MessageBox(self)
 
-        self.sideg = QGroupBox()
-        self.sideg.setStyleSheet("QGroupBox {border-radius: 20 ;background-color: "+uitools.colors["backgb"][self.mode]+" }")
         self.sidel = QVBoxLayout()
-        self.sideg.setLayout(self.sidel)
+        self.sideg = QGroupBox()
+        self.sideg.setStyleSheet("QGroupBox {background-color:"+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color:"+uitools.colors["backgb"][self.mode]+"}")
         self.l.addWidget(self.sideg)
+        self.sideg.setLayout(self.sidel)
+        self.sideg.setFixedWidth(320)
 
         self.adbwidget = QWidget()
         self.adbl = QVBoxLayout()
@@ -119,7 +121,7 @@ class App(QWidget):
         self.appsscroll.setFrameShape(QFrame.NoFrame)
         self.appsscroll.setWidget(self.appswidget)
         self.appsg = QGroupBox()
-        self.appsg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color: "+uitools.colors["backgb"][self.mode]+"} QPushButton { background-color: #5A5A5A; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: #5A5A5A; border-radius: 7; padding: 5}")
+        self.appsg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color: "+uitools.colors["backgb"][self.mode]+"} QPushButton { background-color: "+uitools.colors["line"][self.config["mode"]]+"; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: "+uitools.colors["line"][self.config["mode"]]+"; border-radius: 7; padding: 5}")
         self.l.addWidget(self.appsg)
         self.apps = QVBoxLayout()
         self.apps.addWidget(self.appsscroll)
@@ -134,7 +136,7 @@ class App(QWidget):
         self.settingsscroll.setFrameShape(QFrame.NoFrame)
         self.settingsscroll.setWidget(self.settingswidget)
         self.settingsg = QGroupBox()
-        self.settingsg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color: "+uitools.colors["backgb"][self.mode]+"} QPushButton { background-color: #5A5A5A; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: #5A5A5A; border-radius: 7; padding: 5}")
+        self.settingsg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color: "+uitools.colors["backgb"][self.mode]+"} QPushButton { background-color: "+uitools.colors["line"][self.config["mode"]]+"; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: "+uitools.colors["line"][self.config["mode"]]+"; border-radius: 7; padding: 5}")
         self.l.addWidget(self.settingsg)
         self.settings = QVBoxLayout()
         self.settings.addWidget(self.settingsscroll)
@@ -149,28 +151,32 @@ class App(QWidget):
         self.updatesscroll.setFrameShape(QFrame.NoFrame)
         self.updatesscroll.setWidget(self.updateswidget)
         self.updatesg = QGroupBox()
-        self.updatesg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color: "+uitools.colors["backgb"][self.mode]+"} QPushButton { background-color: #5A5A5A; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: #5A5A5A; border-radius: 7; padding: 5}")
+        self.updatesg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["backgb"][self.mode]+";border-radius: 20} QScrollArea > QWidget > QWidget {background-color: "+uitools.colors["backgb"][self.mode]+"} QPushButton { background-color: "+uitools.colors["line"][self.config["mode"]]+"; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: "+uitools.colors["line"][self.config["mode"]]+"; border-radius: 7; padding: 5}")
         self.l.addWidget(self.updatesg)
         self.updates = QVBoxLayout()
         self.updatesg.setLayout(self.updates)
         
         self.gs = [self.fastbootg,self.adbg,self.aboutg,self.guideg,self.appsg,self.settingsg,self.updatesg]
 
+        self.safs = sidewidget.SideWidget("AFS by @br0ke.tech","alone",os.path.join(curdir,"assets","icons","icon.png"),self.adbg,self,"afs")
+
         self.s1 = sidewidget.SideWidget("ADB Tools","top",os.path.join(curdir,"assets","sideicons","adb.png"),self.adbg,self,self.Runtime)
         self.s2 = sidewidget.SideWidget("Fastboot Tools","middle",os.path.join(curdir,"assets","sideicons","fastboot.png"),self.fastbootg,self,self.Runtime)
         self.s3 = sidewidget.SideWidget("App Management","bottom",os.path.join(curdir,"assets","sideicons","appmanagement.png"),self.appsg,self,self.Runtime)
 
-        self.s4 = sidewidget.SideWidget("Guides","top",os.path.join(curdir,"assets","sideicons","guides.png"),self.guideg,self,self.Runtime)
-        self.s5 = sidewidget.SideWidget("About","bottom",os.path.join(curdir,"assets","sideicons","info.png"),self.aboutg,self,self.Runtime)
+        #self.s4 = sidewidget.SideWidget("Guides","top",os.path.join(curdir,"assets","sideicons","guides.png"),self.guideg,self,self.Runtime)
+        self.s5 = sidewidget.SideWidget("About","alone",os.path.join(curdir,"assets","sideicons","info.png"),self.aboutg,self,self.Runtime)
 
         self.s6 = sidewidget.SideWidget("Settings","top",os.path.join(curdir,"assets","sideicons","settings.png"),self.settingsg,self,self.Runtime)
         self.s7 = sidewidget.SideWidget("Updates","bottom",os.path.join(curdir,"assets","sideicons","update.png"),self.updatesg,self,self.Runtime)
 
+        self.sidel.addWidget(self.safs)
+        self.sidel.addSpacerItem(QSpacerItem(0,12))
         self.sidel.addWidget(self.s1)
         self.sidel.addWidget(self.s2)
         self.sidel.addWidget(self.s3)
         self.sidel.addSpacerItem(QSpacerItem(0,12))
-        self.sidel.addWidget(self.s4)
+        #self.sidel.addWidget(self.s4)
         self.sidel.addWidget(self.s5)
         self.sidel.addSpacerItem(QSpacerItem(0,12))
         self.sidel.addWidget(self.s6)
@@ -178,7 +184,7 @@ class App(QWidget):
         self.sidel.addStretch()
         self.sideg.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Expanding)
 
-        self.sidebars = [self.s1,self.s2,self.s3,self.s4,self.s5,self.s6,self.s7]
+        self.sidebars = [self.s1,self.s2,self.s3,self.s5,self.s6,self.s7]
         self.s1.switch(self.sidebars,self.gs,self.Runtime)
 
         self.t1 = adbtools.ADBTools("Install APK","top",os.path.join(curdir,"assets","adbicons","apk.png"),"Installs APKs to your device directly from your PC.\n - Risk: 1/10\n - Command: adb install "+'"[file]"'+"","adb install "+'"[file]"'+"",True,self,True,False,self.Runtime,True)
@@ -203,12 +209,16 @@ class App(QWidget):
 
         self.i1 = abouttiles.AboutTile("Android Flashing Shortcuts Version","top",os.path.join(curdir,"assets","icons","afs.png"),version,False,self)
         self.i2 = abouttiles.AboutTile("AFS location","middle",os.path.join(curdir,"assets","icons","afs.png"),curdir,True,self)
-        self.i3 = abouttiles.AboutTile("GitHub repository","bottom",os.path.join(curdir,"assets","icons","github.png"),"github.com/broke-tech/android-flashing-shortcuts",True,self)
+        self.i3 = abouttiles.AboutTile("GitHub repository","bottom",os.path.join(curdir,"assets","icons","github.png"),"https://www.github.com/broke-tech/android-flashing-shortcuts",True,self)
 
-        self.i4 = abouttiles.AboutTile("My TikTok (Broke Tech)","top",os.path.join(curdir,"assets","icons","tiktok.png"),"tiktok.com/@br0ke.tech",True,self)
-        self.i5 = abouttiles.AboutTile("My Discord server","bottom",os.path.join(curdir,"assets","icons","discord.png"),"discord.gg/FRbg2Vzq7X",True,self)
+        self.i4 = abouttiles.AboutTile("My TikTok (Broke Tech)","top",os.path.join(curdir,"assets","icons","tiktok.png"),"https://www.tiktok.com/@br0ke.tech",True,self)
+        self.i5 = abouttiles.AboutTile("My Discord server","bottom",os.path.join(curdir,"assets","icons","discord.png"),"https://www.discord.gg/FRbg2Vzq7X",True,self)
 
         """
+        self.guides = []
+        self.guideslabel = QLabel("These guides are AI generated by Claude, so please be careful when following those. I really don't want to use AI on my projects but I only use these guides as placeholders before writing my own. Anyways, I'm not responsible for any damages, blah blah, you get the point. THE RISK IS YOURS!\n")
+        self.guideslabel.setWordWrap(True)
+        self.guidel.addWidget(self.guideslabel)
         with open(os.path.join(curdir,"assets","guides.json"),"r") as file:
             self.guidesfile = json.load(file)
         for i in self.guidesfile:
@@ -222,12 +232,12 @@ class App(QWidget):
                     p = "bottom"
                 else:
                     p = "middle"
-                self.guidel.addWidget(guidetile.GuideTile(self.guidesfile[i]["guides"][a]["name"],p,os.path.join(curdir,"assets","sideicons","guides.png"),self.guidesfile[i]["guides"][a]["how"]))
+                t = guidetile.GuideTile(self.guidesfile[i]["guides"][a]["name"],p,os.path.join(curdir,"assets","sideicons","guides.png"),self.guidesfile[i]["guides"][a]["how"],self)
+                self.guidel.addWidget(t)
+                self.guides.append(t)
             self.guidel.addSpacerItem(QSpacerItem(0,12))
         self.guidel.addStretch()
         """
-        self.guidel.addWidget(abouttiles.AboutTile("COMING SOON!","alone",os.path.join(curdir,"assets","sideicons","guides.png"),"Guides will come out soon!",False,self))
-        self.guidel.addStretch()
 
         self.aboutl.addWidget(self.i1)
         self.aboutl.addWidget(self.i2)
@@ -275,27 +285,28 @@ class App(QWidget):
         self.apps.addWidget(self.applogs)
 
         self.settingsl.addWidget(appearancesetting.AppearanceSettings("Appearance Settings" ,"top", os.path.join(curdir,"assets","icons","brush.png"),self))
-        self.settingsl.addWidget(safetysetting.SafetySettings("Safety Settings" ,"bottom", os.path.join(curdir,"assets","icons","security.png"),self))
+        self.safetys =  safetysetting.SafetySettings("Safety Settings" ,"bottom", os.path.join(curdir,"assets","icons","security.png"),self)
+        self.settingsl.addWidget(self.safetys)
         self.settingsl.addStretch()
 
-        try:
-            self.updatetext = QLabel(f"You are running the latest version of AFS! (v{version})\nPublish date: {releasenotes["releases"][version]["date"]}",alignment=Qt.AlignHCenter)
-            self.updatetext.setWordWrap(True)
-            self.updatetext.setStyleSheet("font-size: 25px")
-            self.updates.addWidget(self.updatetext,alignment=Qt.AlignHCenter)
-            self.updates.addWidget(self.updatesscroll)
+        self.updatetext = QLabel("Automatic updates are\ndisabled.",alignment=Qt.AlignHCenter)
+        self.updatetext.setWordWrap(True)
+        self.updatetext.setStyleSheet("font-size: 25px")
+        self.updates.addWidget(self.updatetext,alignment=Qt.AlignHCenter)
+        self.updates.addWidget(self.updatesscroll)
 
-            self.updatetextdesc = QLabel("RELEASE NOTES:\n"+releasenotes["releases"][releasenotes["latest"]]["notes"],alignment=Qt.AlignHCenter)
-            self.updatetextdesc.setWordWrap(True)
-            self.updatetextdesc.setStyleSheet("font-size: 17px")
-            self.updatesl.addWidget(self.updatetextdesc,alignment=Qt.AlignHCenter)
+        self.updatetextdesc = QLabel("",alignment=Qt.AlignHCenter)
+        self.updatetextdesc.setWordWrap(True)
+        self.updatetextdesc.setStyleSheet("font-size: 17px")
+        self.updatesl.addWidget(self.updatetextdesc,alignment=Qt.AlignHCenter|Qt.AlignVCenter)
 
-            if releasenotes["latest"] != version:
-                self.updatetext.setText(f"Update available! (v{releasenotes["latest"]})\nPublish date: {releasenotes["releases"][releasenotes["latest"]]["date"]}")
-                self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][releasenotes["latest"]]["notes"])
-                self.s7.ft.setText(self.s7.ft.text()+" •")
-        except:
-            self.updates.addWidget(QLabel("YOU ARE RUNNING AN UNKNOWN OR\nUNRELEASED VERSION OF AFS!\n\nPlease contact me or install the official\nrelease on GitHub."),alignment=Qt.AlignHCenter)
+        self.updatebut = QPushButton("Check for updates")
+        self.githubbut = QPushButton("Get the latest version on GitHub")
+        self.githubbut.clicked.connect(lambda:opensite("https://www.github.com/broke-tech/android-flashing-shortcuts"))
+        self.updates.addWidget(self.updatebut,alignment=Qt.AlignHCenter)
+        self.updatebut.clicked.connect(self.checkforupdates)
+        self.updates.addWidget(self.githubbut,alignment=Qt.AlignHCenter)
+
 
     def detectapps(self):
         print("end")
@@ -356,10 +367,41 @@ class App(QWidget):
         else:
             print("Loaded apps successfully!")
 
+    def checkforupdates(self):
+        self.updatetext.setText("Checking for updates\nPlease wait...")
+        try:
+            releasenotesurl = "https://raw.githubusercontent.com/broke-tech/android-flashing-shortcuts/refs/heads/main/app/assets/newreleases.json"
+            r = requests.get(releasenotesurl)
+            with open(curdir+r"\assets\newreleases.json","w") as file:
+                file.write(r.text)
+        except:
+            with open(curdir+r"\assets\newreleases.json","w") as file:
+                json.dump({"latest":version,"releases":{version:{"name":version,"date":"???","notes":"No internet connection!"}}},file)
+
+        with open(curdir+r"\assets\newreleases.json","r") as file:
+            releasenotes = json.load(file)
+
+        if releasenotes["latest"] != version:
+            self.updatetext.setText(f"Update available! (v{releasenotes["latest"]})\nPublish date: {releasenotes["releases"][releasenotes["latest"]]["date"]}")
+            self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][releasenotes["latest"]]["notes"])
+            self.s7.ft.setText("Updates"+" •")
+        else:
+            try:
+                a = releasenotes["releases"][version]["notes"]
+                self.updatetext.setText(f"You are running the latest version of AFS! (v{version})\nPublish date: {releasenotes["releases"][version]["date"]}")
+                self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][version]["notes"])
+            except:
+                self.updatetext.setText("YOU ARE RUNNING AN UNKNOWN OR\nUNRELEASED VERSION OF AFS!")
+                self.updatetextdesc.setText("Please contact me or install the official\nrelease on GitHub.")
+
 class Dialog(QDialog):
     def __init__(self,parentv):
         super().__init__()
         self.parentv = parentv
+        self.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
+        self.setWindowIcon(QIcon(os.path.join(curdir,"assets","icons","icon.ico")))
+        self.setWindowTitle("AFS - Dialog")
+
         if self.parentv.mode == "dark":
             uitools.setmodeblack(self)
         else:
@@ -372,8 +414,15 @@ class Dialog(QDialog):
         self.g.setLayout(self.gl)
         self.l.addWidget(self.g)
 
+        self.p = QLabel()
+        self.i = QPixmap(os.path.join(curdir,"assets","icons","warning.png")).scaled(50,50,Qt.KeepAspectRatio,Qt.TransformationMode.SmoothTransformation)
+        self.p.setPixmap(self.i)
+        self.l = QHBoxLayout()
+        self.gl.addWidget(self.p,alignment=Qt.AlignHCenter)
+        self.gl.addStretch()
+
         self.setWindowTitle("AFS - Warning Dialog")
-        self.setStyleSheet("QGroupBox{ border-radius: 20; background-color: "+uitools.colors["backgb"][self.parentv.mode]+";} QPushButton { background-color: #5A5A5A; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: #5A5A5A; border-radius: 7; padding: 5}")
+        self.setStyleSheet("QGroupBox{ border-radius: 20; background-color: "+uitools.colors["backgb"][self.parentv.mode]+";} QPushButton { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 7; padding: 5}")
         self.label = QLabel("Message",alignment=Qt.AlignHCenter)
         self.label.setWordWrap(True)
         self.yesbut  = QPushButton("Yes")
@@ -382,12 +431,15 @@ class Dialog(QDialog):
         self.nobut.clicked.connect(lambda: self.setvalue(False))
         self.nobut.setStyleSheet("QPushButton { color: #ffffff; background-color: #880808; border-radius: 10; padding: 5} QPushButton::hover { color: #ffffff; background-color: #AA4A44; border-radius: 10; padding: 5}")
         self.gl.addWidget(self.label,alignment=Qt.AlignHCenter)
+        self.gl.addStretch()
+
         self.gl.addWidget(self.nobut)
         self.gl.addWidget(self.yesbut)
 
     def showup(self,message):
         self.label.setText(message)
         self.parentv.yesno = False
+        self.resize(500,500)
         self.exec()
 
     def setvalue(self,value):
@@ -397,7 +449,12 @@ class Dialog(QDialog):
 class MessageBox(QDialog):
     def __init__(self,parentv):
         super().__init__()
+        self.setWindowIcon(QIcon(os.path.join(curdir,"assets","icons","icon.ico")))
+        self.setWindowTitle("AFS - Message")
+
         self.parentv = parentv
+        self.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
+
         if self.parentv.mode == "dark":
             uitools.setmodeblack(self)
         else:
@@ -410,37 +467,44 @@ class MessageBox(QDialog):
         self.g.setLayout(self.gl)
         self.l.addWidget(self.g)
 
+        self.p = QLabel()
+        self.i = QPixmap(os.path.join(curdir,"assets","icons","warning.png")).scaled(50,50,Qt.KeepAspectRatio,Qt.TransformationMode.SmoothTransformation)
+        self.p.setPixmap(self.i)
+        self.l = QHBoxLayout()
+        self.gl.addWidget(self.p,alignment=Qt.AlignHCenter)
+        self.gl.addStretch()
+
         self.setWindowTitle("AFS - Message")
-        self.setStyleSheet("QGroupBox{ border-radius: 20; background-color: "+uitools.colors["backgb"][self.parentv.mode]+";} QPushButton { background-color: #5A5A5A; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: #5A5A5A; border-radius: 7; padding: 5}")
+        self.setStyleSheet("QWidget { border-radius: 20px} QGroupBox{ border-radius: 20px; background-color: "+uitools.colors["backgb"][self.parentv.mode]+";} QPushButton { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 10; padding: 5} QPushButton::hover { background-color: #636363; border-radius: 10; padding: 5} QLineEdit { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 7; padding: 5}")
         self.label = QLabel("Message",alignment=Qt.AlignHCenter)
-        self.label.setWordWrap(True)
         self.yesbut  = QPushButton("Ok")
         self.yesbut.clicked.connect(lambda: self.hide())
         self.gl.addWidget(self.label,alignment=Qt.AlignHCenter)
+        self.gl.addStretch()
         self.gl.addWidget(self.yesbut)
 
     def showup(self,message):
+        if "[startmsg]" in message:
+            self.label.setWordWrap(True)
+        else:
+            self.label.setWordWrap(False)
         self.label.setText(message)
         self.exec()
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
     try:
-        releasenotesurl = "https://raw.githubusercontent.com/broke-tech/android-flashing-shortcuts/refs/heads/main/app/assets/newreleases.json"
-        r = requests.get(releasenotesurl)
-        with open(os.getcwd()+r"\assets\newreleases.json","w") as file:
-            file.write(r.text)
-    except:
-        with open(os.getcwd()+r"\assets\newreleases.json","w") as file:
-            json.dump({"latest":version,"releases":{"name":version,"date":"???","notes":"No internet connection!"}},file)
+        app = QApplication(sys.argv)
+        
+        uitools.setfont(os.path.join(curdir,"assets","font","main.ttf"),app,app)
+        w = App()
+        if w.config["startd"] == True:
+            w.msg.showup("WARNING! PLEASE READ!\nAndroid Flashing Shortcuts is a very useful but risky tool. Wrong usage by you can result in data loss and damages to your device. So my warning is DON'T use this tool if you don't know what you are doing. If you still want to use my tool without the risks you can enable Safe mode in settings. You can also hide this warning in settings.\n\nI AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED TO YOUR DEVICE!\n\nMESSAGE FOR TESTERS: This is not the final version. I want to fix any bugs that you encounter and add some finishing touches later. For now, if you notice anything strange, please inform me. [startmsg]")
 
-    with open(os.getcwd()+r"\assets\newreleases.json","r") as file:
-        releasenotes = json.load(file)
-
-    uitools.setfont(os.path.join(curdir,"assets","font","main.ttf"),app,app)
-    w = App()
-    if w.config["startd"] == True:
-        w.msg.showup("WARNING! PLEASE READ!\nAndroid Flashing Shortcuts is a very useful but risky tool. Wrong usage by you can result in data loss and damages to your device. So my warning is DON'T use this tool if you don't know what you are doing. If you still want to use my tool without the risks you can enable Safe mode in settings. You can also hide this warning in settings.\n\nI AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED TO YOUR DEVICE!\n\nMESSAGE FOR TESTERS: This is not the final version. I want to fix any bugs that you encounter and add some finishing touches later. For now, if you notice anything strange, please inform me.")
-    w.show()
-    app.setStyle("Fushion")
-    app.exec()
+        s = start.Start(w, w.Runtime)
+        if w.config["first"] == True:
+            s.exec()
+        w.show()
+        app.setStyle("Fushion")
+        app.exec()
+    except FileNotFoundError:
+        QMessageBox.critical(None,"Error","Some of AFS's required files could not be found. Please reinstall AFS.\n\nNote: If you launched AFS via Windows Search or Spotlight, try opening the application directly from its installation folder.")

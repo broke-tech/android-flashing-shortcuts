@@ -63,6 +63,8 @@ class SafetySettings(QGroupBox):
         else:
             self.gldialogsbox.setChecked(False)
 
+
+        self.gl.addWidget(QLabel("\nUser experience"),alignment=Qt.AlignHCenter)
         self.glsafe = QHBoxLayout()
         self.gl.addLayout(self.glsafe)
         self.glsafe.addWidget(QLabel("Safe mode:"),alignment=Qt.AlignHCenter)

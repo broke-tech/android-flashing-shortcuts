@@ -1,17 +1,12 @@
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import QSizePolicy,QListWidgetItem, QDialog, QGroupBox, QSpacerItem, QProgressBar,QRadioButton, QFrame, QScrollArea, QFileDialog, QComboBox, QCheckBox, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox, QPushButton, QLineEdit, QTextEdit, QListWidget
 from PyQt5.QtGui import QPixmap, QIcon, QFont, QColor, QFontDatabase, QPalette
-import os
-import json
-import requests
-from webbrowser import open as opensite
-import subprocess
-import sys
 
 colors = {
     "toolgb":{"light":"#D4D4D4","dark":"#303030"},
     "backgb":{"light":"#E2E2E2","dark":"#1a1a1a"},
-    "selgb":{"light":"#A7A7A7","dark":"#5A5A5A"}
+    "selgb":{"light":"#A7A7A7","dark":"#5A5A5A"},
+    "line":{"light":"#A7A7A7","dark":"#5a5a5a"}
 }
 
 def refresh_ui(app): #By chatGPT

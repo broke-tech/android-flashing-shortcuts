@@ -2,13 +2,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QSizePolicy,QListWidgetItem, QDialog, QGroupBox, QSpacerItem, QProgressBar,QRadioButton, QFrame, QScrollArea, QFileDialog, QComboBox, QCheckBox, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox, QPushButton, QLineEdit, QTextEdit, QListWidget
 from PyQt5.QtGui import QPixmap, QIcon, QFont, QColor, QFontDatabase, QPalette, QMouseEvent
 import uitools
-import runtime
-import os
-import json
-import requests
-from webbrowser import open as opensite
-import subprocess
-import sys
 
 class FastbootTools(QGroupBox):
     def __init__(self, name ,placement, iconlocation,desc, command, file,lineedit,parentv, terminal,runtime,safe):
@@ -76,7 +69,7 @@ class FastbootTools(QGroupBox):
         self.gl.addWidget(self.runbut)
         self.l.addWidget(self.g)
         self.setLayout(self.l)
-        self.setStyleSheet("QGroupBox{"+f"{self.placementrules[self.placement]};"+"background-color: "+uitools.colors["toolgb"][self.parentv.mode]+";} QPushButton { background-color: #5A5A5A; border-radius: 7px; padding: 5px} QPushButton::hover { background-color: #636363; border-radius: 7px; padding: 5px} QLineEdit { background-color: #5A5A5A; border-radius: 7px; padding: 5px}")
+        self.setStyleSheet("QGroupBox{"+f"{self.placementrules[self.placement]};"+"background-color: "+uitools.colors["toolgb"][self.parentv.mode]+";} QPushButton { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 7px; padding: 5px} QPushButton::hover { background-color: #636363; border-radius: 7px; padding: 5px} QLineEdit { background-color: "+uitools.colors["line"][self.parentv.config["mode"]]+"; border-radius: 7px; padding: 5px}")
 
     def killp(self):
         self.runtime.kill()

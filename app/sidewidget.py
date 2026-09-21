@@ -2,12 +2,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QSizePolicy,QListWidgetItem, QDialog, QGroupBox, QSpacerItem, QProgressBar,QRadioButton, QFrame, QScrollArea, QFileDialog, QComboBox, QCheckBox, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QMessageBox, QPushButton, QLineEdit, QTextEdit, QListWidget
 from PyQt5.QtGui import QPixmap, QIcon, QFont, QColor, QFontDatabase, QPalette, QMouseEvent
 import uitools
-import os
-import json
-import requests
-from webbrowser import open as opensite
-import subprocess
-import sys
 
 class SideWidget(QGroupBox):
     clicked = pyqtSignal()
@@ -19,7 +13,8 @@ class SideWidget(QGroupBox):
         self.p = QLabel()
         self.placementrules = {"top":"border-top-left-radius: 20px ;border-top-right-radius: 20px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px",
                                "middle":"border-top-left-radius: 7px ;border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px",
-                               "bottom":"border-top-left-radius: 7px ;border-top-right-radius: 7px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px"}
+                               "bottom":"border-top-left-radius: 7px ;border-top-right-radius: 7px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px",
+                                "alone":"border-radius:20px"}
         self.placement = placement
         self.i = QPixmap(iconlocation).scaled(50,50,Qt.KeepAspectRatio,Qt.TransformationMode.SmoothTransformation)
         self.p.setPixmap(self.i)
@@ -39,7 +34,8 @@ class SideWidget(QGroupBox):
 
         self.setLayout(self.l)
         self.setStyleSheet(f"{self.placementrules[self.placement]}; background-color: "+uitools.colors["toolgb"][self.parentv.mode])
-        self.clicked.connect(lambda: self.switch(self.parentv.sidebars,self.parentv.gs,runtime))
+        if runtime != "afs":
+            self.clicked.connect(lambda: self.switch(self.parentv.sidebars,self.parentv.gs,runtime))
         self.setFixedHeight(70)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
@@ -52,7 +48,6 @@ class SideWidget(QGroupBox):
         if runtime.isRunning != True:
             if self.g == self.parentv.appsg:
                 self.parentv.AppRuntime.startc()
-                
 
             for i in others:
                 i.setStyleSheet(f"{i.placementrules[i.placement]}; background-color: "+uitools.colors["toolgb"][self.parentv.mode]+"")
@@ -62,3 +57,21 @@ class SideWidget(QGroupBox):
                 i.hide()
             self.g.show()
 
+            if self.g == self.parentv.updatesg:
+                self.parentv.checkforupdates()
+
+            if self.g == self.parentv.settingsg:
+                if self.parentv.config["startd"] == True:
+                    self.parentv.safetys.glstartbox.setChecked(True)
+                else:
+                    self.parentv.safetys.glstartbox.setChecked(False)
+                
+                if self.parentv.config["dialogs"] == True:
+                    self.parentv.safetys.gldialogsbox.setChecked(True)
+                else:
+                    self.parentv.safetys.gldialogsbox.setChecked(False)
+                
+                if self.parentv.config["safe"] == True:
+                    self.parentv.safetys.glsafebox.setChecked(True)
+                else:
+                    self.parentv.safetys.glsafebox.setChecked(False)
