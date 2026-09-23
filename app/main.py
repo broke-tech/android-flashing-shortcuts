@@ -19,7 +19,7 @@ import requests
 import sys
 
 curdir = os.getcwd()
-version = "3.0"
+version = "3.0.1"
 
 class App(QWidget):
     def __init__(self):
@@ -198,13 +198,13 @@ class App(QWidget):
         self.tools = [self.t1,self.t2,self.t3,self.t4,self.t5,self.t6,self.t7]
 
         self.f2 = fastboottools.FastbootTools("Reboot to ...","middle",os.path.join(curdir,"assets","fasticons","reboot.png"),"Reboot to a specified location \n - Risk: 1/10\n - Command: fastboot reboot [line]","fastboot reboot [line]",False,"Where to reboot?",self,True,self.Runtime,True)
-        self.f7 = fastboottools.FastbootTools("Get information","bottom",os.path.join(curdir,"assets","fasticons","info.png"),"Get device's information \n - Risk: 1/10\n - Command: fastboot getvar","fastboot getvar",False,False,self,True,self.Runtime,True)
-        self.f1 = fastboottools.FastbootTools("Reboot","top",os.path.join(curdir,"assets","fasticons","reboot.png"),"Reboot to a specified location \n - Risk: 1/10\n - Command: fastboot reboot","fastboot reboot",False,False,self,True,self.Runtime,True)
+        self.f7 = fastboottools.FastbootTools("Get information","bottom",os.path.join(curdir,"assets","fasticons","info.png"),"Get device's information \n - Risk: 1/10\n - Command: fastboot getvar all","fastboot getvar all",False,False,self,True,self.Runtime,True)
+        self.f1 = fastboottools.FastbootTools("Reboot","top",os.path.join(curdir,"assets","fasticons","reboot.png"),"Reboot to system. \n - Risk: 1/10\n - Command: fastboot reboot","fastboot reboot",False,False,self,True,self.Runtime,True)
         self.f3 = fastboottools.FastbootTools("Flash to partition","top",os.path.join(curdir,"assets","fasticons","flash.png"),"Flash a file to a specified partition. Esnure that the file you are flashing is compatible with your device\n - Risk: 7/10\n - Command: fastboot flash [line] "+'"[file]"'+"","fastboot flash [line] "+'"[file]"'+"",True,"Where to flash?",self,True,self.Runtime,False)
         self.f4 = fastboottools.FastbootTools("Erase partition","bottom",os.path.join(curdir,"assets","fasticons","erase.png"),"Erase a specified partition. Make sure you have backups and know what is the partition that you are erasing \n - Risk: 6/10\n - Command: fastboot erase [line]","fastboot erase [line]",False,"What to erase?",self,True,self.Runtime,False)
         self.f5 = fastboottools.FastbootTools("Unlock bootloader","top",os.path.join(curdir,"assets","fasticons","unlock.png"),"Unlocks your device's bootloader. Doesn't work on most phone brands, like Samsung or Xiaomi. Erases userdata \n - Risk: 5/10\n - Command: fastboot flashing unlock","fastboot flashing unlock",False,False,self,True,self.Runtime,False)
         self.f6 = fastboottools.FastbootTools("Lock bootloader","bottom",os.path.join(curdir,"assets","fasticons","lock.png"),"Locks your device's bootloader. Doesn't work on most phone brands, like Samsung or Xiaomi. Erases userdata \n - Risk: 4/10\n - Command: fastboot flashing lock","fastboot flashing lock",False,False,self,True,self.Runtime,False)
-        self.f8 = fastboottools.FastbootTools("Boot image temporarily","middle",os.path.join(curdir,"assets","fasticons","boot.png"),"Boot an image temporarily. Esnure that the file you are flashing is compatible with your device\n - Risk: 4/10\n - Command: fastboot boot "+'"[file]"'+"","fastboot boot "+'"[file]"'+"",True,False,self,True,self.Runtime,False)
+        self.f8 = fastboottools.FastbootTools("Boot image temporarily","middle",os.path.join(curdir,"assets","fasticons","boot.png"),"Boot an image temporarily. Esnure that the file you are booting is compatible with your device\n - Risk: 4/10\n - Command: fastboot boot "+'"[file]"'+"","fastboot boot "+'"[file]"'+"",True,False,self,True,self.Runtime,False)
         self.fastools = [self.f1,self.f2,self.f3,self.f4,self.f5,self.f6,self.f7,self.f8]
 
         self.i1 = abouttiles.AboutTile("Android Flashing Shortcuts Version","top",os.path.join(curdir,"assets","icons","afs.png"),version,False,self)
@@ -498,7 +498,7 @@ if __name__ == "__main__":
         uitools.setfont(os.path.join(curdir,"assets","font","main.ttf"),app,app)
         w = App()
         if w.config["startd"] == True:
-            w.msg.showup("WARNING! PLEASE READ!\nAndroid Flashing Shortcuts is a very useful but risky tool. Wrong usage by you can result in data loss and damages to your device. So my warning is DON'T use this tool if you don't know what you are doing. If you still want to use my tool without the risks you can enable Safe mode in settings. You can also hide this warning in settings.\n\nI AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED TO YOUR DEVICE!\n\nMESSAGE FOR TESTERS: This is not the final version. I want to fix any bugs that you encounter and add some finishing touches later. For now, if you notice anything strange, please inform me. [startmsg]")
+            w.msg.showup("WARNING! PLEASE READ!\nAndroid Flashing Shortcuts is a very useful but risky tool. Wrong usage by you can result in data loss and damages to your device. So my warning is DON'T use this tool if you don't know what you are doing. If you still want to use my tool without the risks you can enable Safe mode in settings. You can also hide this warning in settings.\n\nI AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED TO YOUR DEVICE!\n[startmsg]")
 
         s = start.Start(w, w.Runtime)
         if w.config["first"] == True:
