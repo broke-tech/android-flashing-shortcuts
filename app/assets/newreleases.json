@@ -1,5 +1,7 @@
 {
-    "latest":"3.0.1",
-    "releases":{"3.0":{"notes":"- New Runtime\n-Way better code management\n-Material 3-like design (it look beautiful imo)","date":"21/09/2026","name":"3.0"},
+    "latest":"3.0.2",
+    "releases":
+        {"3.0.2":{"notes":"ADDED LINUX SUPPORT IN APPIMAGE. COMES OUT LATER TODAY OR TOMORROW!\n\nFixes: \n- Removed adb logcat cause it's very buggy\n- Some text in App Management\nand more...\n\n\nAdditions:\n- Checking for devices in ADB and Fastboot tools\n- Automatic check for updates (choose in Settings)","date":"28/09/2026","name":"3.0.2"},
+        "3.0":{"notes":"- New Runtime\n-Way better code management\n-Material 3-like design (it look beautiful imo)","date":"21/09/2026","name":"3.0"},
         "3.0.1":{"notes":"Fixed:\n - Get information in fastboot\n - A leftover from the starting dialog\n - Some other stuff","date":"23/09/2026","name":"3.0.1"}}
 }
