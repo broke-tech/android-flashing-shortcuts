@@ -15,7 +15,7 @@ class AppTile(QGroupBox):
         self.placementrules = {"top":"border-top-left-radius: 20px ;border-top-right-radius: 20px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px",
                                "middle":"border-top-left-radius: 7px ;border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px",
                                "bottom":"border-top-left-radius: 7px ;border-top-right-radius: 7px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px"}
-        self.rules = {"3":"Safe","s":"risky","d":"idk"}
+        self.rules = {"3":"3rd party apps are installed by the user, so they are generally safe to remove. Please check if you have important data on an app before you uninstall one","s":"NOT RECOMMENDED! Removing system apps can break your system! If you are debloating please double check before removing one.","d":"Disabled apps are not that important or risky. However, if you see any apps that you didn't disable, better keep them taht way as they can break the system (sometimes)"}
         
         self.l = QVBoxLayout()
 

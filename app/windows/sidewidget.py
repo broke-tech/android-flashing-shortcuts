@@ -60,6 +60,12 @@ class SideWidget(QGroupBox):
             if self.g == self.parentv.updatesg:
                 self.parentv.checkforupdates()
 
+            if self.g == self.parentv.adbg:
+                self.parentv.CheckRuntime.startc(self.parentv.checkadbl)
+
+            if self.g == self.parentv.fastbootg:
+                self.parentv.CheckRuntime.startf(self.parentv.checkfastbootl)
+
             if self.g == self.parentv.settingsg:
                 if self.parentv.config["startd"] == True:
                     self.parentv.safetys.glstartbox.setChecked(True)

@@ -82,7 +82,7 @@ class Start(QDialog):
         self.g3l.addWidget(QLabel("Final touches\n"),alignment=Qt.AlignHCenter)
         self.g3l.addStretch()
 
-        self.g3label = QLabel("Automatic updates are off. You can check manually in Updates.\n\nIf you aren't familiar with android modding, I recommend turning on Safe mode. It disables commands that may put your device at risk.\nThere are more configurations in Settings.")
+        self.g3label = QLabel("Automatic update check is on. You can turn it off in Settings.\n\nIf you aren't familiar with android modding, I recommend turning on Safe mode. It disables commands that may put your device at risk.\nThere are more configurations in Settings.")
         self.g3label.setWordWrap(True)
         self.g3l.addWidget(self.g3label,alignment=Qt.AlignHCenter)
         self.safe = QPushButton("Turn on Safe mode")

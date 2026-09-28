@@ -52,6 +52,8 @@ class FastbootTools(QGroupBox):
             self.ge.addWidget(self.filebutton)
         self.logst = QLabel("LOGS:")
         self.logs = QTextEdit()
+        self.logs.setFrameStyle(QFrame.NoFrame)
+        self.logs.setStyleSheet("border-radius: 13; background-color: palette(base);")
         self.logs.setReadOnly(True)
         self.killbut = QPushButton("Kill")
         self.killbut.setStyleSheet("QPushButton { color: #ffffff; background-color: #880808; border-radius: 10; padding: 5} QPushButton::hover { color: #ffffff; background-color: #AA4A44; border-radius: 10; padding: 5}")

@@ -26,11 +26,11 @@ class RunTime(QProcess):
             self.start(command)
 
     def update(self):
-        out = self.readAllStandardOutput().data().decode().strip()
+        out = self.readAllStandardOutput().data().decode('utf-8', errors='ignore').strip()
         if out:
             self.curterminal.append(out)
 
-        err = self.readAllStandardError().data().decode().strip()
+        err = self.readAllStandardError().data().decode('utf-8', errors='ignore').strip()
         if err:
             self.curterminal.append(err)
 

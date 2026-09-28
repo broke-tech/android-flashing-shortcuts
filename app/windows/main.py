@@ -10,8 +10,10 @@ import sidewidget
 import abouttiles
 import start
 import appruntime
+import checkdevice
 import apptile
 import appearancesetting
+import miscellaneoussetting
 import safetysetting
 import os
 import json
@@ -19,11 +21,13 @@ import requests
 import sys
 
 curdir = os.getcwd()
-version = "3.0.1"
+version = "3.0.2"
+curos = "Windows"
 
 class App(QWidget):
     def __init__(self):
         super().__init__()
+        self.availableu = False
         self.setWindowIcon(QIcon(os.path.join(curdir,"assets","icons","icon.ico")))
         self.setWindowTitle("AFS - Android Flashing Shortcuts")
         with open(os.path.join(curdir,"assets","config.json"),"r") as f:
@@ -38,6 +42,7 @@ class App(QWidget):
         self.curdir = os.getcwd()    
         self.Runtime = runtime.RunTime(self)
         self.AppRuntime = appruntime.RunTime(self,self.Runtime)
+        self.CheckRuntime = checkdevice.RunTime(self,self.Runtime)
         self.l = QHBoxLayout()
         self.setLayout(self.l)
 
@@ -66,6 +71,19 @@ class App(QWidget):
         self.adb = QVBoxLayout()
         self.adb.addWidget(self.adbscroll)
         self.adbg.setLayout(self.adb)
+        ####
+        self.checkadbg = QGroupBox()
+        self.checkadbg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["toolgb"][self.mode]+";border-radius: 17} QPushButton { color: #ffffff; background-color: #0011FF; border-radius: 10; padding: 5} QPushButton::hover { color: #ffffff; background-color: #3D4AFA; border-radius: 10; padding: 5}")
+        self.checkadbh = QHBoxLayout()
+        self.checkadbg.setLayout(self.checkadbh)
+        self.adb.addWidget(self.checkadbg)
+        self.checkadbl = QLabel("Not connected")
+        self.checkadbb = QPushButton("Refresh")
+        self.checkadbb.clicked.connect(lambda:self.CheckRuntime.startc(self.checkadbl))
+        self.checkadbb.setStyleSheet("QPushButton { color: #ffffff; background-color: #0011FF; border-radius: 10; padding: 5} QPushButton::hover { color: #ffffff; background-color: #3D4AFA; border-radius: 10; padding: 5}")
+        self.checkadbh.addWidget(self.checkadbl)
+        self.checkadbh.addStretch()
+        self.checkadbh.addWidget(self.checkadbb)
 
         self.fastbootwidget = QWidget()
         self.fastbootl = QVBoxLayout()
@@ -81,7 +99,19 @@ class App(QWidget):
         self.fastboot = QVBoxLayout()
         self.fastboot.addWidget(self.fastbootscroll)
         self.fastbootg.setLayout(self.fastboot)
-
+        ######
+        self.checkfastbootg = QGroupBox()
+        self.checkfastbootg.setStyleSheet("QGroupBox {background-color: "+uitools.colors["toolgb"][self.mode]+";border-radius: 17} QPushButton { color: #ffffff; background-color: #0011FF; border-radius: 10; padding: 5} QPushButton::hover { color: #ffffff; background-color: #3D4AFA; border-radius: 10; padding: 5}")
+        self.checkfastbooth = QHBoxLayout()
+        self.checkfastbootg.setLayout(self.checkfastbooth)
+        self.fastboot.addWidget(self.checkfastbootg)
+        self.checkfastbootl = QLabel("Not connected")
+        self.checkfastbootb = QPushButton("Refresh")
+        self.checkfastbootb.clicked.connect(lambda:self.CheckRuntime.startf(self.checkfastbootl))
+        self.checkfastbooth.addWidget(self.checkfastbootl)
+        self.checkfastbooth.addStretch()
+        self.checkfastbooth.addWidget(self.checkfastbootb)
+        
         self.aboutwidget = QWidget()
         self.aboutl = QVBoxLayout()
         self.aboutwidget.setLayout(self.aboutl)
@@ -176,7 +206,6 @@ class App(QWidget):
         self.sidel.addWidget(self.s2)
         self.sidel.addWidget(self.s3)
         self.sidel.addSpacerItem(QSpacerItem(0,12))
-        #self.sidel.addWidget(self.s4)
         self.sidel.addWidget(self.s5)
         self.sidel.addSpacerItem(QSpacerItem(0,12))
         self.sidel.addWidget(self.s6)
@@ -191,11 +220,11 @@ class App(QWidget):
         self.t2 = adbtools.ADBTools("Sideload ROMs","bottom",os.path.join(curdir,"assets","adbicons","sideload.png"),"Sideload ROMs when booted into recovery, usually requires an unlocked bootloader.\n - Risk: 5/10\n - Command: adb sideload "+'"[file]"'+"","adb sideload "+'"[file]"'+"",True,self,True,False,self.Runtime,False)
         self.t3 = adbtools.ADBTools("Reboot to system","top",os.path.join(curdir,"assets","adbicons","reboot.png"),"Reboot to system.\n - Risk: 0/10\n - Command: adb reboot","adb reboot",False,self,True,False,self.Runtime,True)
         self.t4 = adbtools.ADBTools("Reboot to ...","bottom",os.path.join(curdir,"assets","adbicons","reboot.png"),"Reboot to a specified location \n - Risk: 1/10\n - Command: adb reboot [line]","adb reboot [line]",False,self,True,"Where to reboot?",self.Runtime,True)
-        self.t5 = adbtools.ADBTools("Get logs","top",os.path.join(curdir,"assets","adbicons","logs.png"),"Get device's logs \n - Risk: 0/10\n - Command: adb logcat","adb logcat",False,self,True,False,self.Runtime,True)
-        self.t6 = adbtools.ADBTools("Push file to device","middle",os.path.join(curdir,"assets","adbicons","file.png"),"Send a local file to your device's Downloads folder \n - Risk: 0/10\n - Command: adb push "+'"[file]"'+" sdcard/Download","adb push "+'"[file]"'+" sdcard/Download",True,self,True,False,self.Runtime,True)
+        self.t5 = adbtools.ADBTools("Get logs *","middle",os.path.join(curdir,"assets","adbicons","logs.png"),"Get device's logs \n - Risk: 0/10\n - Command: adb logcat\n\n* WARNING: Because most devices push a lot of logs, AFS sometimes struggles with this command and lags, especially if you have a slower PC. Also recommended to not maximize, minimize or change the windows size when running this command.","adb logcat",False,self,True,False,self.Runtime,True)
+        self.t6 = adbtools.ADBTools("Push file to device","top",os.path.join(curdir,"assets","adbicons","file.png"),"Send a local file to your device's Downloads folder \n - Risk: 0/10\n - Command: adb push "+'"[file]"'+" sdcard/Download","adb push "+'"[file]"'+" sdcard/Download",True,self,True,False,self.Runtime,True)
         self.t7 = adbtools.ADBTools("Run a custom adb command","bottom",os.path.join(curdir,"assets","adbicons","adb.png"),"Run a custom adb command. Type it below without the word 'adb' \n - Risk: 5/10\n - Command: adb [line]","adb [line]",False,self,True,"Type your command here:",self.Runtime,False)
 
-        self.tools = [self.t1,self.t2,self.t3,self.t4,self.t5,self.t6,self.t7]
+        self.tools = [self.t1,self.t2,self.t3,self.t4,self.t6,self.t7]
 
         self.f2 = fastboottools.FastbootTools("Reboot to ...","middle",os.path.join(curdir,"assets","fasticons","reboot.png"),"Reboot to a specified location \n - Risk: 1/10\n - Command: fastboot reboot [line]","fastboot reboot [line]",False,"Where to reboot?",self,True,self.Runtime,True)
         self.f7 = fastboottools.FastbootTools("Get information","bottom",os.path.join(curdir,"assets","fasticons","info.png"),"Get device's information \n - Risk: 1/10\n - Command: fastboot getvar all","fastboot getvar all",False,False,self,True,self.Runtime,True)
@@ -207,7 +236,7 @@ class App(QWidget):
         self.f8 = fastboottools.FastbootTools("Boot image temporarily","middle",os.path.join(curdir,"assets","fasticons","boot.png"),"Boot an image temporarily. Esnure that the file you are booting is compatible with your device\n - Risk: 4/10\n - Command: fastboot boot "+'"[file]"'+"","fastboot boot "+'"[file]"'+"",True,False,self,True,self.Runtime,False)
         self.fastools = [self.f1,self.f2,self.f3,self.f4,self.f5,self.f6,self.f7,self.f8]
 
-        self.i1 = abouttiles.AboutTile("Android Flashing Shortcuts Version","top",os.path.join(curdir,"assets","icons","afs.png"),version,False,self)
+        self.i1 = abouttiles.AboutTile("Android Flashing Shortcuts Version","top",os.path.join(curdir,"assets","icons","afs.png"),f"{version} for {curos}",False,self)
         self.i2 = abouttiles.AboutTile("AFS location","middle",os.path.join(curdir,"assets","icons","afs.png"),curdir,True,self)
         self.i3 = abouttiles.AboutTile("GitHub repository","bottom",os.path.join(curdir,"assets","icons","github.png"),"https://www.github.com/broke-tech/android-flashing-shortcuts",True,self)
 
@@ -253,7 +282,7 @@ class App(QWidget):
         self.adbl.addWidget(self.t3)
         self.adbl.addWidget(self.t4)
         self.adbl.addSpacerItem(QSpacerItem(0,12))
-        self.adbl.addWidget(self.t5)
+        #self.adbl.addWidget(self.t5)
         self.adbl.addWidget(self.t6)
         self.adbl.addWidget(self.t7)
         self.adbl.addStretch()
@@ -279,14 +308,18 @@ class App(QWidget):
         self.appsearch.addWidget(self.appsline)
         self.appsearch.addWidget(self.appsbut)
         self.applogs = QTextEdit()
+        self.applogs.setStyleSheet("border-radius: 13; background-color: palette(base);")
+        self.applogs.setFrameStyle(QFrame.NoFrame)
         self.applogs.setReadOnly(True)
         self.applogs.setMaximumHeight(120)
         self.apps.addWidget(QLabel("LOGS:"))
         self.apps.addWidget(self.applogs)
 
         self.settingsl.addWidget(appearancesetting.AppearanceSettings("Appearance Settings" ,"top", os.path.join(curdir,"assets","icons","brush.png"),self))
-        self.safetys =  safetysetting.SafetySettings("Safety Settings" ,"bottom", os.path.join(curdir,"assets","icons","security.png"),self)
+        self.safetys =  safetysetting.SafetySettings("Safety Settings" ,"middle", os.path.join(curdir,"assets","icons","security.png"),self)
+        self.miscs =  miscellaneoussetting.MiscellaneousSettings("Miscellaneous Settings" ,"bottom", os.path.join(curdir,"assets","icons","afs.png"),self)
         self.settingsl.addWidget(self.safetys)
+        self.settingsl.addWidget(self.miscs)
         self.settingsl.addStretch()
 
         self.updatetext = QLabel("Automatic updates are\ndisabled.",alignment=Qt.AlignHCenter)
@@ -306,7 +339,6 @@ class App(QWidget):
         self.updates.addWidget(self.updatebut,alignment=Qt.AlignHCenter)
         self.updatebut.clicked.connect(self.checkforupdates)
         self.updates.addWidget(self.githubbut,alignment=Qt.AlignHCenter)
-
 
     def detectapps(self):
         print("end")
@@ -368,31 +400,41 @@ class App(QWidget):
             print("Loaded apps successfully!")
 
     def checkforupdates(self):
-        self.updatetext.setText("Checking for updates\nPlease wait...")
-        try:
-            releasenotesurl = "https://raw.githubusercontent.com/broke-tech/android-flashing-shortcuts/refs/heads/main/app/assets/newreleases.json"
-            r = requests.get(releasenotesurl)
-            with open(curdir+r"\assets\newreleases.json","w") as file:
-                file.write(r.text)
-        except:
-            with open(curdir+r"\assets\newreleases.json","w") as file:
-                json.dump({"latest":version,"releases":{version:{"name":version,"date":"???","notes":"No internet connection!"}}},file)
-
-        with open(curdir+r"\assets\newreleases.json","r") as file:
-            releasenotes = json.load(file)
-
-        if releasenotes["latest"] != version:
-            self.updatetext.setText(f"Update available! (v{releasenotes["latest"]})\nPublish date: {releasenotes["releases"][releasenotes["latest"]]["date"]}")
-            self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][releasenotes["latest"]]["notes"])
-            self.s7.ft.setText("Updates"+" •")
-        else:
+        if self.availableu == False:
+            self.updatetext.setText("Checking for updates\nPlease wait...")
             try:
-                a = releasenotes["releases"][version]["notes"]
-                self.updatetext.setText(f"You are running the latest version of AFS! (v{version})\nPublish date: {releasenotes["releases"][version]["date"]}")
-                self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][version]["notes"])
+                releasenotesurl = "https://raw.githubusercontent.com/broke-tech/android-flashing-shortcuts/refs/heads/main/app/assets/newreleases.json"
+                r = requests.get(releasenotesurl)
+                with open(curdir+r"\assets\newreleases.json","w") as file:
+                    file.write(r.text)
             except:
-                self.updatetext.setText("YOU ARE RUNNING AN UNKNOWN OR\nUNRELEASED VERSION OF AFS!")
-                self.updatetextdesc.setText("Please contact me or install the official\nrelease on GitHub.")
+                with open(curdir+r"\assets\newreleases.json","w") as file:
+                    json.dump({"latest":version,"releases":{version:{"name":version,"date":"???","notes":"No internet connection!"}}},file)
+
+            try:
+                with open(curdir+r"\assets\newreleases.json","r") as file:
+                    releasenotes = json.load(file)
+            except:
+                with open(curdir+r"\assets\newreleases.json","w") as file:
+                    json.dump({"latest":version,"releases":{version:{"name":version,"date":"???","notes":"No internet connection!"}}},file)
+                with open(curdir+r"\assets\newreleases.json","r") as file:
+                    releasenotes = json.load(file)
+
+            if releasenotes["latest"] != version:
+                self.updatetext.setText(f"Update available! (v{releasenotes["latest"]})\nPublish date: {releasenotes["releases"][releasenotes["latest"]]["date"]}")
+                self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][releasenotes["latest"]]["notes"])
+                self.s7.ft.setText("Updates"+" •")
+                self.availableu = True
+            else:
+                try:
+                    a = releasenotes["releases"][version]["notes"]
+                    self.updatetext.setText(f"You are running the latest version of AFS! (v{version})\nPublish date: {releasenotes["releases"][version]["date"]}")
+                    self.updatetextdesc.setText("RELEASE NOTES:\n"+releasenotes["releases"][version]["notes"])
+                except:
+                    self.updatetext.setText("YOU ARE RUNNING AN UNKNOWN OR\nUNRELEASED VERSION OF AFS!")
+                    self.updatetextdesc.setText("Please contact me or install the official\nrelease on GitHub.")
+        else:
+            pass
 
 class Dialog(QDialog):
     def __init__(self,parentv):
@@ -503,6 +545,8 @@ if __name__ == "__main__":
         s = start.Start(w, w.Runtime)
         if w.config["first"] == True:
             s.exec()
+        if w.config["ucheck"] == True:
+            w.checkforupdates()
         w.show()
         app.setStyle("Fushion")
         app.exec()

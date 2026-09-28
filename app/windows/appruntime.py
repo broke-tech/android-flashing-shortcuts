@@ -35,7 +35,7 @@ class RunTime(QProcess):
             print("Started first phase")
 
     def update(self):
-        out = self.readAllStandardOutput().data().decode().strip()
+        out = self.readAllStandardOutput().data().decode('utf-8', errors='ignore').strip()
         try:
             if out:
                 sout = out.split("\n")
@@ -45,7 +45,7 @@ class RunTime(QProcess):
         except:
             pass
 
-        err = self.readAllStandardError().data().decode().strip()
+        err = self.readAllStandardError().data().decode('utf-8', errors='ignore').strip()
         try:
             if err:
                 serr = err.split("\n")
@@ -56,7 +56,7 @@ class RunTime(QProcess):
             pass
 
     def update2(self):
-        out = self.readAllStandardOutput().data().decode().strip()
+        out = self.readAllStandardOutput().data().decode('utf-8', errors='ignore').strip()
         try:
             if out:
                 sout = out.split("\n")
@@ -66,7 +66,7 @@ class RunTime(QProcess):
         except:
             pass
 
-        err = self.readAllStandardError().data().decode().strip()
+        err = self.readAllStandardError().data().decode('utf-8', errors='ignore').strip()
         try:
             if err:
                 serr = err.split("\n")
@@ -77,7 +77,7 @@ class RunTime(QProcess):
             pass
 
     def update3(self):
-        out = self.readAllStandardOutput().data().decode().strip()
+        out = self.readAllStandardOutput().data().decode('utf-8', errors='ignore').strip()
         try:
             if out:
                 sout = out.split("\n")
@@ -87,7 +87,7 @@ class RunTime(QProcess):
         except:
             pass
 
-        err = self.readAllStandardError().data().decode().strip()
+        err = self.readAllStandardError().data().decode('utf-8', errors='ignore').strip()
         try:
             if err:
                 serr = err.split("\n")
